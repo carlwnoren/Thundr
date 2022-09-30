@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Thundr</string>
+    <string name="forecast_banner">Forecast</string>
     <string name="city_name">St Paul, MN</string>
     <string name="current_temp">72°</string>
     <string name="feels_like">Feels Like 78°</string>
@@ -7,4 +8,10 @@
     <string name="high_temp">High 80°</string>
     <string name="humidity">Humidity 100%</string>
     <string name="pressure">Pressure 1023 hPa</string>
+    <string name="forecast">Forecast</string>
+    <string name="forecast_low">Low: %.0f°</string>
+    <string name="forecast_high">High: %.0f°</string>
+    <string name="forecast_sunrise">Sunrise: %s</string>
+    <string name="forecast_sunset">Sunset: %s</string>
+    <string name="forecast_date">%s</string>
 </resources>
