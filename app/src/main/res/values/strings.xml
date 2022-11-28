@@ -1,13 +1,14 @@
 <resources>
     <string name="app_name">Thundr</string>
+    <string name="api_key">74e8f09a272400865010c6a84622c2e0</string>
     <string name="forecast_banner">Forecast</string>
-    <string name="city_name">St Paul, MN</string>
+    <string name="city_name">%s</string>
     <string name="current_temp">%.0f°</string>
     <string name="feels_like">Feels Like %.0f°</string>
     <string name="low_temp">Low: %.0f°</string>
     <string name="high_temp">High: %.0f°</string>
     <string name="humidity">Humidity: %.0f%%</string>
-    <string name="pressure">Pressure: %d hPa</string>
+    <string name="pressure">Pressure: %.0f hPa</string>
     <string name="forecast">Forecast</string>
     <string name="forecast_low">Low: %.0f°</string>
     <string name="forecast_high">High: %.0f°</string>

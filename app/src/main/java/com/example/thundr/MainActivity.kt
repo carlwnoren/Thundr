@@ -6,9 +6,11 @@ import androidx.activity.compose.setContent
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.thundr.ui.CurrentConditions
+import com.example.thundr.ui.CurrentConditionsScreen
 import com.example.thundr.ui.ForecastScreen
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -16,7 +18,7 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
             NavHost(navController, startDestination = "CurrentConditions") {
                 composable("CurrentConditions") {
-                    CurrentConditions {
+                    CurrentConditionsScreen() {
                         navController.navigate("Forecast")
                     }
                 }

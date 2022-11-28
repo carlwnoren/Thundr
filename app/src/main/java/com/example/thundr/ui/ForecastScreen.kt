@@ -1,50 +1,56 @@
 package com.example.thundr.ui
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.Arrangement.End
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import com.example.thundr.*
 import com.example.thundr.R
-import org.intellij.lang.annotations.JdkConstants
+import com.example.thundr.models.ForecastData
 
-private val data: List<DayForecast> = (0..15).map {
-    DayForecast(
-        1664402978 + it * 86400.toLong(),
-        1664402978 - 1000 - it * 200.toLong(),
-        1664402978 + it * 50.toLong(),
-        ForecastTemp(
-            42 - it.toFloat(),
-            42 + it * 1.2.toFloat()
-        ),
-        1025 + it.toFloat(),
-        80 + it
-    ) }
-
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun ForecastScreen() {
-    LazyColumn {
-        items(items = data) { item: DayForecast ->
-            ForecastRow(item = item)
-        }
+fun ForecastScreen(
+    viewModel: ForecastViewModel = hiltViewModel()
+) {
+    val state by viewModel.forecast.collectAsState(null)
+    LaunchedEffect(Unit) {
+        viewModel.fetchData()
     }
+    Scaffold(
+        topBar = {AppBar(title = stringResource(R.string.forecast))}
+            ){
+            state?.let {
+                LazyColumn {
+                    items(items = it.conditions) { item: ForecastData ->
+                        ForecastRow(item = item)
+                        Spacer(modifier = Modifier.height(22.dp))
+                    }
+                }
+            }
+        }
 }
 
 @Composable
-private fun ForecastRow(item: DayForecast) {
+private fun ForecastRow(item: ForecastData) {
     Row(
         modifier = Modifier
             .background(Color.White)
@@ -55,6 +61,10 @@ private fun ForecastRow(item: DayForecast) {
             fontSize = 18.sp,
         )
         Image(painter = painterResource(id = R.drawable.sun), contentDescription = "")
+        AsyncImage(
+            model = String.format("https://openweathermap.org/img/wn/%s@2x.png", item.weather.firstOrNull()?.iconName),
+            contentDescription = "icon"
+        )
         Spacer(modifier = Modifier.weight(1f, fill = true))
         Text(
             text = stringResource(id = R.string.forecast_date, item.date.toMonthDay()),
@@ -65,11 +75,11 @@ private fun ForecastRow(item: DayForecast) {
         Spacer(modifier = Modifier.weight(1f, fill = true))
         Column {
             Text(
-                text = stringResource(id = R.string.forecast_high, item.temp.max),
+                text = stringResource(id = R.string.forecast_high, item.conditions.maxTemperature),
                 style = textStyle,
             )
             Text(
-                text = stringResource(id = R.string.forecast_low, item.temp.min),
+                text = stringResource(id = R.string.forecast_low, item.conditions.minTemperature),
                 style = textStyle,
             )
         }
@@ -89,10 +99,3 @@ private fun ForecastRow(item: DayForecast) {
     }
 }
 
-@Preview (
-    showSystemUi = true
-        )
-@Composable
-private fun ForecastRowPreview() {
-    ForecastRow(item = data[0])
-}
