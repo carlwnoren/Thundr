@@ -25,15 +25,23 @@ import coil.compose.AsyncImage
 import com.example.thundr.*
 import com.example.thundr.R
 import com.example.thundr.models.ForecastData
+import com.example.thundr.models.LatitudeLongitude
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ForecastScreen(
+    latitudeLongitude: LatitudeLongitude?,
     viewModel: ForecastViewModel = hiltViewModel()
 ) {
     val state by viewModel.forecast.collectAsState(null)
-    LaunchedEffect(Unit) {
-        viewModel.fetchData()
+    if (latitudeLongitude != null) {
+        LaunchedEffect(Unit) {
+            viewModel.fetchForecast(latitudeLongitude)
+        }
+    } else {
+        LaunchedEffect(Unit) {
+            viewModel.fetchForecast()
+        }
     }
     Scaffold(
         topBar = {AppBar(title = stringResource(R.string.forecast))}

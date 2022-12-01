@@ -3,6 +3,7 @@ package com.example.thundr.ui
 
 import androidx.lifecycle.ViewModel
 import com.example.thundr.models.CurrentConditions
+import com.example.thundr.models.LatitudeLongitude
 import kotlinx.coroutines.channels.Channel
 import com.example.thundr.service.OpenWeatherMapAPI
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,6 +20,11 @@ class CurrentConditionsViewModel @Inject constructor(private val api: OpenWeathe
 
     fun fetchData() = runBlocking {
         val currentConditions = api.getCurrentConditions("55416")
+        _currentConditions.trySend(currentConditions)
+    }
+
+    fun fetchCurrentLocationData(latitudeLongitude: LatitudeLongitude) = runBlocking {
+        val currentConditions = api.getCurrentConditions(latitudeLongitude.latitude, latitudeLongitude.longitude)
         _currentConditions.trySend(currentConditions)
     }
 }

@@ -3,6 +3,7 @@ package com.example.thundr.ui
 import androidx.lifecycle.ViewModel
 import com.example.thundr.models.CurrentConditions
 import com.example.thundr.models.Forecast
+import com.example.thundr.models.LatitudeLongitude
 import kotlinx.coroutines.channels.Channel
 import com.example.thundr.service.OpenWeatherMapAPI
 import kotlinx.coroutines.flow.Flow
@@ -17,8 +18,13 @@ class ForecastViewModel @Inject constructor(private val api: OpenWeatherMapAPI):
 
     public val forecast: Flow<Forecast> = _forecast.receiveAsFlow()
 
-    fun fetchData() = runBlocking {
+    fun fetchForecast() = runBlocking {
         val forecast = api.getForecast("55416")
+        _forecast.trySend(forecast)
+    }
+
+    fun fetchForecast(latitudeLongitude: LatitudeLongitude) = runBlocking {
+        val forecast = api.getForecast(latitudeLongitude.latitude, latitudeLongitude.longitude)
         _forecast.trySend(forecast)
     }
 }

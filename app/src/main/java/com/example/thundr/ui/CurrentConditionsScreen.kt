@@ -25,24 +25,33 @@ import androidx.lifecycle.LifecycleOwner
 import coil.compose.AsyncImage
 import com.example.thundr.R
 import com.example.thundr.models.CurrentConditions
+import com.example.thundr.models.LatitudeLongitude
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun CurrentConditionsScreen(
+    latitudeLongitude: LatitudeLongitude?,
     viewModel: CurrentConditionsViewModel = hiltViewModel(),
+    onGetWeatherForMyLocationClick: () -> Unit,
     onForecastButtonClick: () -> Unit
 ) {
     val state by viewModel.currentConditions.collectAsState(null)
-    LaunchedEffect(Unit) {
-        viewModel.fetchData()
+
+    if (latitudeLongitude != null) {
+        LaunchedEffect(Unit) {
+            viewModel.fetchCurrentLocationData(latitudeLongitude)
+        }
+    } else {
+        LaunchedEffect(Unit) {
+            viewModel.fetchData()
+        }
     }
+
     Scaffold(
         topBar = { AppBar(title = stringResource(R.string.app_name))}
     ) {
         state?.let {
-            CurrentConditionsContent(it) {
-                onForecastButtonClick()
-            }
+            CurrentConditionsContent(it, onGetWeatherForMyLocationClick, onForecastButtonClick)
         }
     }
 }
@@ -50,6 +59,7 @@ fun CurrentConditionsScreen(
 @Composable
 fun CurrentConditionsContent(
     currentConditions: CurrentConditions,
+    onGetWeatherForMyLocationClick: () -> Unit,
     onForecastButtonClick: () -> Unit
 ) {
     Column(
@@ -123,6 +133,9 @@ fun CurrentConditionsContent(
         Spacer(modifier = Modifier.height(72.dp))
         Button(onClick = onForecastButtonClick) {
             Text(text = stringResource(id = R.string.forecast_banner))
+        }
+        Button(onClick = onGetWeatherForMyLocationClick) {
+            Text(text = stringResource(id = R.string.get_weather_button))
         }
     }
 }
